@@ -23,4 +23,13 @@ public class Aluno {
     private double notaSegundoSemestre;
     private String nomeProfessor;
     private int numeroDaSala;
+
+    public Aluno(DadosAluno aluno) {
+        this.nomeAluno = aluno.nomeAluno();
+        this.idadeAluno = aluno.idadeAluno();
+        this.notaPrimeiroSemestre = aluno.notaPrimeiroSemestre();
+        this.notaSegundoSemestre = aluno.notaSegundoSemestre();
+        this.nomeProfessor = aluno.nomeProfessor();
+        this.numeroDaSala = aluno.numeroDaSala();
+    }
 }
