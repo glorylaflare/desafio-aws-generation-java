@@ -4,13 +4,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.generation.brazil.grades.dto.ListagemAlunoDTO;
 import org.generation.brazil.grades.dto.RespostaCadastroAlunoDTO;
-import org.generation.brazil.grades.model.Aluno;
-import org.generation.brazil.grades.model.DadosAluno;
-import org.generation.brazil.grades.model.DadosDetalhadosAluno;
-import org.generation.brazil.grades.model.DadosListagemAluno;
+import org.generation.brazil.grades.model.*;
 import org.generation.brazil.grades.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -38,7 +34,7 @@ public class AlunoController {
     @GetMapping
     public ResponseEntity<ListagemAlunoDTO> listarAlunos(
             @PageableDefault(direction = Sort.Direction.ASC) Pageable paginacao) {
-        var page = alunoRepository.findAll(paginacao).map(DadosListagemAluno::new);
+        var page = alunoRepository.findAll(paginacao).map(DadosCompletosAluno::new);
         return ResponseEntity.ok(ListagemAlunoDTO.pegaConteudo(page));
     }
 
@@ -47,7 +43,20 @@ public class AlunoController {
         Optional<Aluno> alunoOptional = alunoRepository.findById(id);
         if(alunoOptional.isPresent()) {
             var aluno = alunoOptional.get();
-            return ResponseEntity.ok(new DadosListagemAluno(aluno));
+            return ResponseEntity.ok(new DadosCompletosAluno(aluno));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
+        }
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity atualizaAluno(@PathVariable Long id, @RequestBody @Valid DadosAtualizaAluno dadosAluno) {
+        Optional<Aluno> alunoOptional = alunoRepository.findById(id);
+        if(alunoOptional.isPresent()) {
+            var aluno = alunoOptional.get();
+            aluno.atualizaInformacoes(dadosAluno);
+            return ResponseEntity.ok(new DadosCompletosAluno(aluno));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
         }
