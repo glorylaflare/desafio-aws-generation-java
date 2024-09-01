@@ -1,32 +1,10 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: alunos_generation
+  postgres_nlw:
+    container_name: grades
+    image: postgres
     ports:
-      - "5432:5432"
-    networks:
-      - mynetwork
-
-  api:
-    image: alunos_gen:latest
-    container_name: alunos_gen
-    depends_on:
-      - postgres
+      - 5434:5432
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/alunos_generation
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: admin
-    ports:
-      - "8080:8080"
-    networks:
-      - mynetwork
-
-networks:
-  mynetwork:
-    driver: bridge
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=alunos_generation
