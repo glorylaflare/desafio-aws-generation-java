@@ -29,14 +29,15 @@ public class AlunoController {
     public ResponseEntity cadastrarAluno(@RequestBody @Valid DadosAluno alunos) {
         var aluno = new Aluno(alunos);
         alunoRepository.save(aluno);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new RespostaCadastroAlunoDTO("Aluno cadastrado com sucesso!", new DadosDetalhadosAluno(aluno)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new RespostaCadastroAlunoDTO("Aluno cadastrado com sucesso!", new DadosDetalhadosAluno(aluno)));
     }
 
     @GetMapping
     public ResponseEntity<ListagemAlunoDTO> listarAlunos(
             @PageableDefault(direction = Sort.Direction.ASC) Pageable paginacao) {
         var page = alunoRepository.findAll(paginacao).map(DadosCompletosAluno::new);
-        return ResponseEntity.ok(ListagemAlunoDTO.pegaConteudo(page));
+        return ResponseEntity.status(HttpStatus.OK).body(ListagemAlunoDTO.pegaConteudo(page));
     }
 
     @GetMapping("/{id}")
@@ -44,7 +45,7 @@ public class AlunoController {
         Optional<Aluno> alunoOptional = alunoRepository.findById(id);
         if(alunoOptional.isPresent()) {
             var aluno = alunoOptional.get();
-            return ResponseEntity.ok(new DadosCompletosAluno(aluno));
+            return ResponseEntity.status(HttpStatus.OK).body(new DadosCompletosAluno(aluno));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
         }
@@ -57,7 +58,8 @@ public class AlunoController {
         if(alunoOptional.isPresent()) {
             var aluno = alunoOptional.get();
             aluno.atualizaInformacoes(dadosAluno);
-            return ResponseEntity.ok(new DadosCompletosAluno(aluno));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new RespostaAtualizacaoAlunoDTO("Aluno atualizado com sucesso!", new DadosCompletosAluno(aluno)));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
         }
@@ -68,7 +70,7 @@ public class AlunoController {
         Optional<Aluno> alunoOptional = alunoRepository.findById(id);
         if(alunoOptional.isPresent()) {
             alunoRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Aluno deletado com sucesso!");
+            return ResponseEntity.status(HttpStatus.OK).body("Aluno deletado com sucesso!");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
         }
