@@ -32,4 +32,13 @@ public class Aluno {
         this.nomeProfessor = aluno.nomeProfessor();
         this.numeroDaSala = aluno.numeroDaSala();
     }
+
+    public void atualizaInformacoes(DadosAtualizaAluno dadosAluno) {
+        this.nomeAluno = dadosAluno.nomeAluno();
+        this.idadeAluno = dadosAluno.idadeAluno();
+        this.notaPrimeiroSemestre = dadosAluno.notaPrimeiroSemestre();
+        this.notaSegundoSemestre = dadosAluno.notaSegundoSemestre();
+        this.nomeProfessor = dadosAluno.nomeProfessor();
+        this.numeroDaSala = dadosAluno.numeroDaSala();
+    }
 }
