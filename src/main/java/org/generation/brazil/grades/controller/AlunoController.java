@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
@@ -38,5 +40,16 @@ public class AlunoController {
             @PageableDefault(direction = Sort.Direction.ASC) Pageable paginacao) {
         var page = alunoRepository.findAll(paginacao).map(DadosListagemAluno::new);
         return ResponseEntity.ok(ListagemAlunoDTO.pegaConteudo(page));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity listarAlunoPorId(@PathVariable Long id) {
+        Optional<Aluno> alunoOptional = alunoRepository.findById(id);
+        if(alunoOptional.isPresent()) {
+            var aluno = alunoOptional.get();
+            return ResponseEntity.ok(new DadosListagemAluno(aluno));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
+        }
     }
 }
