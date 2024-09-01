@@ -1,5 +1,6 @@
 package org.generation.brazil.grades.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.generation.brazil.grades.dto.ListagemAlunoDTO;
@@ -9,8 +10,6 @@ import org.generation.brazil.grades.model.*;
 import org.generation.brazil.grades.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,7 @@ public class AlunoController {
 
     @GetMapping
     public ResponseEntity<ListagemAlunoDTO> listarAlunos(
-            @PageableDefault(direction = Sort.Direction.ASC) Pageable paginacao) {
+            @Parameter(hidden = true) Pageable paginacao) {
         var page = alunoRepository.findAll(paginacao).map(DadosCompletosAluno::new);
         return ResponseEntity.status(HttpStatus.OK).body(ListagemAlunoDTO.pegaConteudo(page));
     }
