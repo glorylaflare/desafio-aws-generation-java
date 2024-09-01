@@ -3,6 +3,7 @@ package org.generation.brazil.grades.controller;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.generation.brazil.grades.dto.ListagemAlunoDTO;
+import org.generation.brazil.grades.dto.RespostaAtualizacaoAlunoDTO;
 import org.generation.brazil.grades.dto.RespostaCadastroAlunoDTO;
 import org.generation.brazil.grades.model.*;
 import org.generation.brazil.grades.repository.AlunoRepository;
@@ -57,6 +58,17 @@ public class AlunoController {
             var aluno = alunoOptional.get();
             aluno.atualizaInformacoes(dadosAluno);
             return ResponseEntity.ok(new DadosCompletosAluno(aluno));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletarAluno(@PathVariable Long id) {
+        Optional<Aluno> alunoOptional = alunoRepository.findById(id);
+        if(alunoOptional.isPresent()) {
+            alunoRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Aluno deletado com sucesso!");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado!");
         }
